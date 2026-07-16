@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNDEADSHORT // Bonfire</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        void: '#0f0e0d', ash: '#7a6b5e', iron: '#1a1210',
+                        crimson: '#9b111e', gold: '#c4953a', darkgold: '#8a6a2a', bone: '#b8a898'
+                    },
+                    fontFamily: { gothic: ['Cinzel','serif'], lore: ['Crimson Text','serif'] }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="min-h-screen flex items-center justify-center relative overflow-hidden bg-[#0f0e0d]">
+
+    <!-- Dark abyss background -->
+    <div class="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,_#1a1410_0%,_#0f0e0d_70%,_#050403_100%)]"></div>
+    <div class="absolute inset-0 z-1 bg-gradient-to-b from-transparent via-[#0f0e0d]/60 to-[#0f0e0d]/95 pointer-events-none"></div>
+
+    <!-- SINGLE GLOW: One aura, smooth breathing -->
+    <div class="single-glow" aria-hidden="true"></div>
+
+    <!-- Ambient embers canvas (re-added) -->
+    <canvas id="emberCanvas" class="fixed inset-0 z-20 pointer-events-none" aria-hidden="true"></canvas>
+
+    <!-- UI floats directly over the void -->
+    <div class="relative z-10 w-full max-w-md px-6 py-8 text-center">
+
+        <!-- Header -->
+        <div>
+            <h1 class="font-gothic text-5xl md:text-6xl font-black tracking-widest title-flame">
+                UNDEAD SHORT
+            </h1>
+            <p class="font-lore text-base tracking-[0.2em] text-[#b8a898] italic mb-1 drop-shadow-[0_0_4px_rgba(184,168,152,0.2)]">
+                The bonfire links all souls.
+            </p>
+            <p class="font-lore text-base tracking-[0.15em] text-[#8a6a2a] italic mb-2 drop-shadow-[0_0_2px_rgba(138,106,42,0.2)]">
+                The flame burns eternal.
+            </p>
+        </div>
+
+        <!-- Bonfire Flame Divider -->
+        <div class="flex items-center justify-center gap-4 my-6">
+            <div class="h-px w-12 bg-gradient-to-r from-transparent to-[#3a1a0a]"></div>
+            <svg class="flame-icon w-8 h-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 17C8.5 17 7 14.5 7 12C7 9.5 9 8 10 6C11 8 12 10 12 8C12 10 13 12 14 10C15 12 16 13.5 17 15C17 16.5 15.5 17 12 17Z" fill="#9b111e" opacity="0.8"/>
+                <path d="M12 16C9.5 16 8.5 14 8.5 12.5C8.5 10.5 10 9 11 8C11.5 9.5 12 11 12 10C12 11 13 12.5 14 11.5C14.5 12.5 15.5 14 15.5 15.5C15.5 16.5 14 16 12 16Z" fill="#c4953a" opacity="0.9"/>
+                <path d="M12 15C10.5 15 9.8 13.5 10 12.5C10.3 11 11.5 10 12 9.5C12.5 10.5 13.5 12 14 11.5C14.3 12.5 14 14 12 15Z" fill="#ffd700" opacity="0.8"/>
+                <ellipse cx="12" cy="17" rx="3" ry="1" fill="#1a0a05" opacity="0.6"/>
+            </svg>
+            <div class="h-px w-12 bg-gradient-to-l from-transparent to-[#3a1a0a]"></div>
+        </div>
+
+        <!-- Input & Action -->
+        <div class="space-y-5">
+            <div class="text-left">
+                <label class="font-gothic text-base tracking-[0.3em] uppercase block mb-2 text-[#b8a898] drop-shadow-[0_0_2px_rgba(184,168,152,0.2)]">
+                    Inscribe the path
+                </label>
+                <input 
+                    type="url" 
+                    id="urlInput"
+                    placeholder="https://example.com/abyssal/path..."
+                    class="w-full px-3 py-3 bg-[#0a0807]/95 border-b-2 border-[#2a1a12] text-[#c4953a] caret-[#c4953a] placeholder-[#5a4030] focus:outline-none focus:border-[#9b111e] focus:shadow-[0_0_20px_rgba(155,17,30,0.1)] transition-all duration-300 font-lore text-base tracking-wide" 
+                />
+            </div>
+
+            <button id="executeBtn" class="w-full py-3.5 bg-[#0a0807]/95 border border-[#9b111e] text-[#b8a898] hover:bg-[#9b111e] hover:border-[#ff1a1a] hover:text-[#f2e3d3] transition-all duration-300 shadow-[0_0_15px_rgba(155,17,30,0.05)] hover:shadow-[0_0_25px_rgba(155,17,30,0.3)] font-gothic text-base tracking-[0.25em] uppercase font-bold rounded-sm flex items-center justify-center gap-4">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 4H16V12C16 14.5 14 16 12 16C10 16 8 14.5 8 12V4Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="rgba(196, 149, 58, 0.3)"/>
+                    <path d="M10 2H14V4H10V2Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M8.5 9C8.5 9 10 12 12 12C14 12 15.5 9 15.5 9" stroke="#c4953a" stroke-width="2" fill="none" opacity="0.9"/>
+                    <path d="M12 16V20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                Kindle the Bonfire
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 4C8 4 6 8 6 12C6 16 9 18 12 18C15 18 18 16 18 12C18 8 16 4 12 4Z" fill="rgba(155, 17, 30, 0.5)" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M12 8C10.5 8 10 10 10 11C10 12 11 13 12 13C13 13 14 12 14 11C14 10 13.5 8 12 8Z" fill="currentColor" opacity="0.8"/>
+                    <path d="M8 16C8 16 9.5 18 12 18C14.5 18 16 16 16 16" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+                    <circle cx="11" cy="12" r="0.5" fill="#c4953a" opacity="0.8"/>
+                    <circle cx="13" cy="12" r="0.5" fill="#c4953a" opacity="0.8"/>
+                </svg>
+            </button>
+
+            <div class="flex items-center justify-center gap-2 mt-2">
+                <div class="w-2 h-2 rounded-full bg-[#c4953a] flicker"></div>
+                <span id="statusText" class="font-lore text-lg italic tracking-widest text-[#8a6a2a] drop-shadow-[0_0_2px_rgba(138,106,42,0.3)]">
+                    The flame sleeps...
+                </span>
+            </div>
+        </div>
+
+        <!-- Result -->
+        <div id="resultContainer" class="hidden mt-6 fade-in">
+            <div class="bg-[#0a0807]/90 border-l-4 border-[#c4953a] p-4 rounded-sm flex items-center justify-between flex-wrap gap-3 text-left shadow-[inset_0_0_40px_rgba(0,0,0,0.95)]">
+                <div>
+                    <span class="font-gothic text-base tracking-widest uppercase block mb-1 text-[#b8a898] drop-shadow-[0_0_2px_rgba(184,168,152,0.2)]">
+                        A new flame is lit
+                    </span>
+                    <span id="shortUrl" class="font-gothic text-lg tracking-wider text-[#c4953a] select-all drop-shadow-[0_0_8px_rgba(196,149,58,0.3)]">
+                        goshort.com/abc123
+                    </span>
+                </div>
+                <button id="copyBtn" class="border border-[#c4953a] text-[#c4953a] hover:bg-[#c4953a] hover:text-[#0f0e0d] transition-colors duration-200 px-4 py-1.5 font-gothic text-sm tracking-[0.2em] uppercase rounded-sm">
+                    Seal
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-8">
+            <p class="font-lore text-base tracking-[0.4em] uppercase italic text-[#8a6a2a] drop-shadow-[0_0_2px_rgba(138,106,42,0.2)]">
+                [ Embers of the First Flame ]
+            </p>
+            <p class="mt-2 font-lore text-xs tracking-[0.2em] italic text-[#6a5a4a] drop-shadow-[0_0_2px_rgba(106,90,74,0.2)]">
+                "The flame flickers, but never dies."
+            </p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/embers.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
